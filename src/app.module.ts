@@ -1,16 +1,27 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path/posix';
-import { RecipesResolver } from './recipes/recipes.resolver';
-
+import { RecipessModule } from './recipes/recipe.module';
+import { Recipe } from './recipes/recipe.entity';
 @Module({
   imports: [
     GraphQLModule.forRoot({
       debug: true,
       playground: true,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql')
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: '0.0.0.0',
+      port: 3306,
+      username: 'root',
+      password: 'root',
+      database: 'nest-grapqhql-dev',
+      entities: [Recipe],
+      synchronize: true,
+    }),
+    RecipessModule,
   ],
-  providers: [RecipesResolver],
 })
 export class AppModule {}
